@@ -197,17 +197,17 @@ Master::ping(uint8_t id, uint8_t *p_recv_id_array, uint8_t recv_array_capacity, 
 uint8_t 
 Master::ping(uint8_t id, InfoFromPing_t *recv_ping_info_array, uint8_t recv_array_cnt, uint32_t timeout_ms)
 {
-  uint8_t ret_id_cnt = 0;
+  int8_t ret_id_cnt = -1;
   InfoFromPing_t *p_info = recv_ping_info_array;
   uint32_t pre_time_ms;
 
   // Parameter exception handling
   if(p_info == nullptr){
     last_lib_err_ = DXL_LIB_ERROR_NULLPTR;
-    return 0;
+    return -1;
   }else if(recv_array_cnt == 0){
     last_lib_err_ = DXL_LIB_ERROR_NOT_ENOUGH_BUFFER_SIZE;
-    return 0;
+    return -1;
   }
 
   // Send Ping Instruction
@@ -230,6 +230,7 @@ Master::ping(uint8_t id, InfoFromPing_t *recv_ping_info_array, uint8_t recv_arra
 
         if (millis()-pre_time_ms >= timeout_ms) {
           last_lib_err_ = DXL_LIB_ERROR_TIMEOUT;
+          ret_id_cnt = -1;
           break;
         }
       }
